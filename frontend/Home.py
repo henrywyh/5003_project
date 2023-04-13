@@ -6,7 +6,7 @@ st.set_page_config(page_title='Mental Health Analysis', page_icon=':bar_chart:',
 
 st.title('Mental Health Analysis')
 with st.form('my_form'):
-    text =st.text_input('Enter the text to be analyzed')
+    text =st.text_area('Enter the text to be analyzed')
     submit = st.form_submit_button('Submit',use_container_width=True,)
     
     
