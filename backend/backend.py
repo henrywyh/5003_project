@@ -4,7 +4,7 @@ import os
 spark_home = os.environ.get('SPARK_HOME', None)
 findspark.init(spark_home)
 from pyspark.sql import SparkSession
-from src.ml_model import MLModel
+from utils.ml_model import MLModel
 
 # Create a Flask app
 app = Flask(__name__)
