@@ -1,9 +1,4 @@
 
-import findspark
-import os 
-spark_home = os.environ.get('SPARK_HOME', None)
-findspark.init(spark_home)
-
 from pyspark.sql import SparkSession
 from pyspark.sql.types import *
 from pyspark.ml.feature import Tokenizer, StopWordsRemover, CountVectorizer, IDF
@@ -24,6 +19,7 @@ class MLModel(object):
             bootstrap_servers='localhost:9092', 
             value_deserializer=lambda m: json.loads(m.decode('utf-8')))
         self.all_results = []
+        self.is_stop = False
 
     def predict(self, text):
         # Create a Spark DataFrame from the input text
@@ -35,6 +31,8 @@ class MLModel(object):
     
     def start(self):
         for msgs in self.consumer:
+            if self.is_stop:
+                break
             for msg in msgs.value:
                 print("Received message ML:", msg)  # Print received message for verification
                 result = self.predict(msg['title'])
@@ -43,3 +41,6 @@ class MLModel(object):
     
     def get_results(self):
         return self.all_results
+    
+    def stop(self):
+        self.is_stop = True

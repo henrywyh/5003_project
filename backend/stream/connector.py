@@ -1,7 +1,4 @@
-import findspark
-import os 
-spark_home = os.environ.get('SPARK_HOME', None)
-findspark.init(spark_home)
+
 from pyspark import SparkConf, SparkContext
 from pyspark.streaming import StreamingContext
 from kafka import KafkaProducer
@@ -22,8 +19,9 @@ class SparkStreamingWrapper:
         self.subreddit = subreddit
         # Keep track of the IDs of seen submissions
         self.seen_ids = set()
-
+        print('Spark Streaming Wrapper initialized.')
     def start(self, batch_interval):
+        print('Starting Spark Streaming...')
         # Initialize Spark and Streaming contexts
         self.sc = SparkContext.getOrCreate()
         self.ssc = StreamingContext(self.sc, batch_interval)
@@ -38,9 +36,11 @@ class SparkStreamingWrapper:
         # Start the Spark Streaming context
         self.ssc.start()
         self.ssc.awaitTermination()
+    
 
     def stop(self):
-        self.ssc.stop()
+        print('Stopping Spark Streaming...')
+        self.ssc.stop(False)
         self.sc.stop()
 
     def get_submissions(self,rdd):

@@ -20,7 +20,7 @@ nc -lk 9999
 7. Run the flask app
 ```
 cd backend
-python backend.py
+flask run
 ```
 8. Run the streamlit app
 ```
