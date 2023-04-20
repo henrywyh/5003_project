@@ -1,6 +1,6 @@
 import streamlit as st
 import requests
-backend_url = 'http://localhost:5000'
+from const import BACKEND_URL
 st.set_page_config(page_title='Mental Health Analysis', page_icon=':bar_chart:', layout='wide')
 # Listen to the Enter key when the submit button is focused
 
@@ -13,7 +13,7 @@ with st.form('my_form'):
 if submit:
     # call the backend
     with st.spinner('Analyzing...'):
-        response = requests.post(f'{backend_url}/depressed', json={'text': text}).json()
+        response = requests.post(f'{BACKEND_URL}/depressed', json={'text': text}).json()
         if response == 1.0: 
             st.success('it is depression')
         else:
