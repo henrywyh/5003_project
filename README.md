@@ -7,13 +7,22 @@
 ```
 pip install -r requirements.txt
 ```
-
-5. Run the flask app
+5. Run Kafka
+```
+cd kafka_2.13-3.4.0
+bin/zookeeper-server-start.sh config/zookeeper.properties
+bin/kafka-server-start.sh config/server.properties
+```
+6. Run the port
+```
+nc -lk 9999
+```
+7. Run the flask app
 ```
 cd backend
 python backend.py
 ```
-6. Run the streamlit app
+8. Run the streamlit app
 ```
 cd frontend
 streamlit run Home.py
