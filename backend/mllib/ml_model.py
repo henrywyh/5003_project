@@ -32,7 +32,7 @@ class MLModel(object):
     def start(self):
         for msgs in self.consumer:
             if self.is_stop:
-                break
+                return
             for msg in msgs.value:
                 print("Received message ML:", msg)  # Print received message for verification
                 result = self.predict(msg['title'])

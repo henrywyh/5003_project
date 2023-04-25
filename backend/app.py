@@ -31,13 +31,16 @@ def create_app():
     def stop_threads(signum, frame):
         print('Stopping threads...')
         wrapper.stop()
+        print ('Wrapper stopped')
         receiver.stop()
+        print ('Receiver stopped')
         ml_model.stop()
+        print ('MLModel stopped')
         streaming_thread.stop_and_join()
         receiver_thread.stop_and_join()
         ml_thread.stop_and_join()    
         print('All threads stopped.')
-        # exit(0)
+        exit(0)
     # Register the signal handler
     signal.signal(signal.SIGINT, stop_threads)
 

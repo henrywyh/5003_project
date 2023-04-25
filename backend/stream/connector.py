@@ -40,8 +40,11 @@ class SparkStreamingWrapper:
 
     def stop(self):
         print('Stopping Spark Streaming...')
-        self.ssc.stop(False)
-        self.sc.stop()
+        try:
+            self.ssc.stop(stopSparkContext=True, stopGraceFully=False)
+            self.sc.stop()
+        except:
+            pass
 
     def get_submissions(self,rdd):
         # Set up Reddit API

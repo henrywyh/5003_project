@@ -15,9 +15,8 @@ class Receiver:
         self.is_stop = False
     def start(self):
         for msg in self.consumer:
-            
             if self.is_stop:
-                break
+                return
             print("Received message:", msg.value)  # Print received message for verification
             data = [msg.value]
             df = self.spark.createDataFrame(data, schema=["id", "title"])
