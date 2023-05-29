@@ -9,6 +9,7 @@ from stream.connector import SparkStreamingWrapper
 from stream.transformer import Receiver
 from utils import FlaskThread
 import signal
+import pyodbc 
 
 def create_app():
     # Create a Flask app
@@ -22,6 +23,17 @@ def create_app():
     # Create a Kafka receiver
     receiver = Receiver(spark,'reddit_titles', 'machine_learning')
     ml_model = MLModel(spark,'models/lr_model','machine_learning')
+    
+    self.dbconnect = pyodbc.connect('Driver={ODBC Driver 18 for SQL Server};'
+              'Server=tcp:azure-bdt-sql.database.windows.net,1433;'
+              'Database=azure_bdt_5003_SQL;'
+              'Uid=kmclaw;'
+              'Pwd=Naruto95!;'
+              'Encrypt=yes;'
+              'TrustServerCertificate=no;'
+              'Connection Timeout=30'
+               )
+    self.dbcursor=self.dbconnect.cursor()
     
     streaming_thread = FlaskThread(target=wrapper.start, args=(15,))
     receiver_thread = FlaskThread(target=receiver.start)
@@ -52,6 +64,8 @@ def create_app():
 
         # Call the Spark function with the input arguments
         result = ml_model.predict(text)
+        self.dbcursor.execute(f'SELECT model_result from ModelResults WHERE identifier = (\'{msg['title']}\')')
+        result = self.dbcursor[0]
         
         # Return the result as a JSON response
         return jsonify(result)

@@ -7,6 +7,7 @@ from pyspark.ml.classification import LogisticRegression
 from pyspark.ml import PipelineModel
 from pyspark.ml.evaluation import MulticlassClassificationEvaluator
 from kafka import KafkaConsumer
+import pyodbc 
 
 import json
 class MLModel(object):
@@ -18,6 +19,16 @@ class MLModel(object):
             self.topic, 
             bootstrap_servers='localhost:9092', 
             value_deserializer=lambda m: json.loads(m.decode('utf-8')))
+        self.dbconnect = pyodbc.connect('Driver={ODBC Driver 18 for SQL Server};'
+                      'Server=tcp:azure-bdt-sql.database.windows.net,1433;'
+                      'Database=azure_bdt_5003_SQL;'
+                      'Uid=kmclaw;'
+                      'Pwd=Naruto95!;'
+                      'Encrypt=yes;'
+                      'TrustServerCertificate=no;'
+                      'Connection Timeout=30'
+                       )
+        self.dbcursor=self.dbconnect.cursor()
         self.all_results = []
         self.is_stop = False
 
@@ -38,6 +49,8 @@ class MLModel(object):
                 result = self.predict(msg['title'])
                 print("Prediction ML:", result)
                 self.all_results.append((msg['title'],result))
+                self.dbcursor.execute(f'INSERT INTO ModelResults (identifier, model_result) VALUES (\'{msg['title']}\', \'{result}\')')
+                self.dbconnect.commit()
     
     def get_results(self):
         return self.all_results
