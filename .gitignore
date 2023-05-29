@@ -2,3 +2,4 @@ models
 data
 .ipynb_checkpoints
 __pycache__
+kafka*
